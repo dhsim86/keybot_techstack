@@ -10,6 +10,7 @@ import edu.uci.ics.crawler4j.robotstxt.RobotstxtConfig;
 import edu.uci.ics.crawler4j.robotstxt.RobotstxtServer;
 import edu.uci.ics.crawler4j.url.WebURL;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 
 import java.util.Set;
 import java.util.regex.Pattern;
@@ -19,6 +20,7 @@ public class MyCrawler extends WebCrawler {
 
     private final static Pattern FILTERS = Pattern.compile(".*(\\.(css|js|gif|jpg"
             + "|png|mp3|mp4|zip|gz))$");
+    private final static Pattern GOOGLE_FILTERS = Pattern.compile("(http:\\/\\/|https:\\/\\/)?([a-z\\.]*)?google\\S*");
 
     public void test() throws Exception {
         String crawlStorageFolder = "D:\\workspace\\tmp";
@@ -30,15 +32,17 @@ public class MyCrawler extends WebCrawler {
         // Instantiate the controller for this crawl.
         PageFetcher pageFetcher = new PageFetcher(config);
         RobotstxtConfig robotstxtConfig = new RobotstxtConfig();
+        robotstxtConfig.setEnabled(false);
+
         RobotstxtServer robotstxtServer = new RobotstxtServer(robotstxtConfig, pageFetcher);
         CrawlController controller = new CrawlController(config, pageFetcher, robotstxtServer);
 
         // For each crawl, you need to add some seed urls. These are the first
         // URLs that are fetched and then the crawler starts following links
         // which are found in these pages
-        controller.addSeed("https://dhsim86.github.io/web/");
-        controller.addSeed("https://dhsim86.github.io/blog/");
-        controller.addSeed("https://dhsim86.github.io/");
+        //controller.addSeed("https://dhsim86.github.io/web/");
+        //controller.addSeed("https://dhsim86.github.io/blog/");
+        controller.addSeed("https://www.google.com/search?q=스프링");
 
         // The factory which creates instances of crawlers.
         CrawlController.WebCrawlerFactory<WebCrawler> factory = MyCrawler::new;
@@ -51,8 +55,11 @@ public class MyCrawler extends WebCrawler {
     @Override
     public boolean shouldVisit(Page referringPage, WebURL url) {
         String href = url.getURL().toLowerCase();
+        AntPathMatcher pathMatcher = new AntPathMatcher();
+
         return !FILTERS.matcher(href).matches()
-                && href.startsWith("https://dhsim86.github.io/");
+                && !GOOGLE_FILTERS.matcher(href).matches();
+                //&& href.startsWith("https://dhsim86.github.io/");
     }
 
     @Override
