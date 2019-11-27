@@ -1,0 +1,9 @@
+fixtures:
+  test: test
+  user-list:
+    - id: 1
+      name: dongho
+      age: 34
+    - id: 2
+      name: dongho2
+      age: 342
