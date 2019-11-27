@@ -27,6 +27,7 @@ public class MyCrawler extends WebCrawler {
         int numberOfCrawlers = 7;
 
         CrawlConfig config = new CrawlConfig();
+        config.setMaxDepthOfCrawling(2);
         config.setCrawlStorageFolder(crawlStorageFolder);
 
         // Instantiate the controller for this crawl.
@@ -43,6 +44,7 @@ public class MyCrawler extends WebCrawler {
         //controller.addSeed("https://dhsim86.github.io/web/");
         //controller.addSeed("https://dhsim86.github.io/blog/");
         controller.addSeed("https://www.google.com/search?q=스프링");
+        controller.addSeed("https://www.google.com/search?q=스프링&start=10");
 
         // The factory which creates instances of crawlers.
         CrawlController.WebCrawlerFactory<WebCrawler> factory = MyCrawler::new;
