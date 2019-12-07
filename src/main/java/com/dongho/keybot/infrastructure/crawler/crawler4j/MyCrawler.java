@@ -12,6 +12,7 @@ import edu.uci.ics.crawler4j.url.WebURL;
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 
+import java.util.List;
 import java.util.Set;
 import java.util.regex.Pattern;
 
@@ -22,12 +23,12 @@ public class MyCrawler extends WebCrawler {
             + "|png|mp3|mp4|zip|gz))$");
     private final static Pattern GOOGLE_FILTERS = Pattern.compile("(http:\\/\\/|https:\\/\\/)?([a-z\\.]*)?google\\S*");
 
-    public void test() throws Exception {
+    public void test(List<String> seed) throws Exception {
         String crawlStorageFolder = "D:\\workspace\\tmp";
         int numberOfCrawlers = 7;
 
         CrawlConfig config = new CrawlConfig();
-        config.setMaxDepthOfCrawling(2);
+        config.setMaxDepthOfCrawling(1);
         config.setCrawlStorageFolder(crawlStorageFolder);
 
         // Instantiate the controller for this crawl.
@@ -43,8 +44,8 @@ public class MyCrawler extends WebCrawler {
         // which are found in these pages
         //controller.addSeed("https://dhsim86.github.io/web/");
         //controller.addSeed("https://dhsim86.github.io/blog/");
-        controller.addSeed("https://www.google.com/search?q=스프링");
-        controller.addSeed("https://www.google.com/search?q=스프링&start=10");
+        seed.stream()
+            .forEach(controller::addSeed);
 
         // The factory which creates instances of crawlers.
         CrawlController.WebCrawlerFactory<WebCrawler> factory = MyCrawler::new;
@@ -78,6 +79,7 @@ public class MyCrawler extends WebCrawler {
             System.out.println("META TAG: " + htmlParseData.getMetaTags());
             System.out.println("Text length: " + text.length());
             System.out.println("Html length: " + html.length());
+            //System.out.println("Html Content " + htmlParseData.getHtml());
             System.out.println("Number of outgoing links: " + links.size());
         }
     }
